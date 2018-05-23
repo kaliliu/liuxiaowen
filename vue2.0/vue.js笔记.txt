@@ -1,0 +1,1126 @@
+1、数据渲染 /数据的同步 ；
+2、组件化 /模块化 ；
+3、路由（Vue.js路由的不同之处是 不用页面刷新的单页面的路由切换。）
+   ajax 数据流 ；
+
+模板渲染过程：
+
+	<div id = "app">
+	{{message}}
+	</div>
+	
+	new Vue({
+	   el:"#app"
+	   data:{
+		message:"hello Vue.js!"
+		}
+	})
+组件：
+	<div id="example">
+	    <my-component></my-component>  这个标签就类似Vue.js 的一个组件,它是模板；这个组件可以跟外层的组件做数据的交换。	
+	</div>
+
+	//定义
+	var MyComponent = Vue.extent({
+	     template:"<div>A custom component!</div>"
+	})
+
+	// 注册
+	Vue.component("my-conponent",MyComponent)
+
+	//创建根实例
+	new Vue（{
+	  el:"#example"
+	}）
+
+==》最后渲染为：
+	<div id = "example">
+	  <div>A custom component!</div>
+	</div>
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Vue.js的学习资源：
+	vuejs中文官网 - http://cn.vuejs.org/
+	vuejs源码 - https://github.com/vuejs/vue
+	vue.js官方工具 - https://github.com/vuejs 
+	vuejs官方论坛 - http://forum.vuejs.org/ 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Vue.js 实例对象 ：
+
+	我们引入Vue.js的时候，在vue的全局里就有一个这样的实例对象
+
+    new Vue({   //vue是全局的构造函数
+	el:"#app",
+	data:{  //构造参数 
+	  message:"hello Vue.js!"
+	}
+
+    })
+
+~~~~~~~~~~~~~~vue对象实例~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ var my =  new Vue({   //vue是全局的构造函数
+	el:"#app",  //el是用在哪个模块里面 ，比如：el:"body" 代表用在bod范围里面，也可以通过id 、class 来绑定范围。
+	template:"<div>{{fruit}}</div>" //模块
+	data:{
+	    fruit:"apple"  //数据可以通过data载入 
+	}
+
+    })
+ 所以可以通过这样的实例对象拿到fruit，比如： my.fruit 
+
+~~~~~~~~通过components 方法引入到其它的组件~~~~~~~~~~~~~~~~~
+new Vue（{
+   el:"body",
+   components:{App} 引入组件 
+	
+}）
+
+~~~~~~~~~~Vue实例的一个生命周期~~~~~~~~~~~
+一个组件或者是一个对象它在不同阶段Vue.js 提供了不同的钩子 。
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~第三节~~~Vue.js的根组件以及组件之间的相互关系~~~~~~~~~~~~~~~~~~~~~~~~
+
+1、通过vue脚手架工具生成-->main.js以及index.html 
+
+=》 在main.js里面有：import Vue from "vue" es6的写法，引入了vue库并赋予Vue变量 --》类似于require（）
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=> 注册一个全局的组件： 
+	----------------------------------------------------------
+	Vue.component("my-header",{
+	    template:"<p>this is my header {{kali}}</p>"
+	    data:{
+		kali:"hello world2"
+	     }
+	})
+
+在html中这样引入组件 =》: <div id="app">
+				<my-header></my-header>  // 在html中引入组件
+				hello
+			  </div>
+	------------------------------------------------------------
+
+局部组件-》：
+	
+
+但是项目中很少这样做全局组件，一般是做组件里面包含一个子组件的写法--> 如下：
+
+	var myHeaderChild = {
+	    template:"<p>i am my header child</p>"
+	}
+	var myHeader = {
+	    template:"<p><my-header-child></my-header-child></p>"
+	    components:{
+	    	"my-header-child":myHeaderChild
+	     }，
+	//这里注意data的引用，在html里多次地方引用但data的时候，data数据会改变的，所以data这样写：
+		data:function(){
+	   	   return {
+	               f:1,
+		       d:2
+	    	    }
+		}
+
+	}
+
+	new Vue({
+	    el:"#app",
+	    data:{
+		word:"hello world2"
+	    },
+	    components:{
+	        "my-header":myHeader
+	    }
+
+	})
+
+上面是组件，然后html的组件引入如下：
+
+	<div id="app">
+	   <my-header></my-header> // 组件引入 
+	    hello
+	</div>
+
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+=》实例一个Vue对象 ：
+	new Vue({
+	   el:"#app",
+	   template:"<p>hello world {{word}}</p>"
+	   data:{word:hello world2}
+	})
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~vue基本概念~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+全局api
+实例选项
+实例属性/方法 ：
+var root= new Vue({
+	    el:"#app",
+	    data:{
+		word:"hello world2"
+	    },
+	    components:{
+	        "my-header":myHeader
+	    }
+
+	})
+root.$data
+root.$on('emit',function(){})
+
+指令:
+v-html = "test"
+v-on:click 所有事件的绑定都是通过冒号来传递的
+v-on:keydown.enter=""  修改通过.来实现
+v-for
+
+	var myHeaderChild = {
+	    template:"<p v-html = "test" v-on:keydown.enter="" >i am my header child</p>"
+	}
+
+
+内置组件：
+
+	var myHeader = {
+	    template:"<p><component :is=""><component></p><keep-alive><router-view></router-view></keep-alive>"  //像这样的内置组件使用 
+	    components:{
+	    	"my-header-child":myHeaderChild
+	     }，
+		data:function(){
+	   	   return {
+	               f:1,
+		       d:2
+	    	    }
+		}
+
+	}
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~第四节 vue的基本用法 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import Vue from "vue"
+inport App from "./App" // es6的语法，引入App组件
+new Vue({
+    el:"#app",
+    render:h => h(App)  //es6的语法，相当于render:function(h){return h(App)}
+})
+
+--------------------------------------------上面为一次new Vue的实例 根文件的一个配置，这样形成一个组件树的结构 。
+
+App.vue文件代码  -->如下:
+
+<template>
+   <div>    //注意，在2.0之前可以通过属性来绑定的，如 title="hello" ,但是现在会报错 
+     {{hello}}  // 模板渲染还可以通过指令v-html v-text <div v-html="hello"></div>
+     {{num+1}} // 表达式的写法
+     {{ status ? "success":"fail"}}  //表达式渲染
+      
+   </div>
+    <p v-for =" (item ,index) in list" :class = "odd:inde % 2">{{item.name}}-{{item.price}}-{{index}}</p> //数组循环输出  ,其中：class 为属性绑定方法 
+    <div v-for = "(value,key) in objList">{{key+value}}</div>  // 对象的循环输出
+    <componentA v-for = "(value,key) in objList"></componentA> //通过内置组件引入 ，在引入之前要在export default配置一下 
+
+    <button v-on:click="addItem">addItem</button>
+</template>
+
+<script>
+
+import componentA from "./components/a"  //es6 import 引入a组 ;
+
+export default{      // 这里其实就是一个new vue 实例的一个配置js对象 
+  components:{componentA},//es6的一个缩写，相当于：componentA:componentA
+  data(){
+     return {
+	hello:"world"，
+	num：1，
+        status:true，
+	list:[
+	   {
+	     name:"apple",
+	     price:34
+	    },
+	   {
+	     name:"apple",
+	     price:34
+	    },
+	   {
+	     name:"apple",
+	     price:34
+	    }
+	
+	]，
+	objList:{
+	  name:"apple",
+	  price:34,
+	  color:"red",
+	  weight:14
+	}
+     }
+  },
+  methods:{  //通过methods 封装触发事件的方法 
+  	addItem(){   // es6的简写 ，相当于addItem:function(){},在这个方法里面可以调用data
+       	   console.log(this.list);
+	   this.list.pust({  //数组方法 ： pust()、pop()、shift（）、unshift（）、splice（）、sort（）、reverse（）；注意：concat（）、slice（）、filter（）和改变数组长度，强制转换，不会被触发的；要改变数组的值这样做： Vue.set(this.list,1,{name:"pinaapple",price:256})
+	       name:"pinaapple",
+	        price:256
+	    })
+        }
+  
+  }
+
+}
+</script>
+
+<style>
+html{
+  height:100%;
+}
+</style>
+
+
+总结：
+1、单文件组件
+2、文本渲染 - v-html,{{}},v-text 
+3、列表渲染 - 数组，对象
+4、列表数据的同步更新 
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~vue标签属性和条件方法
+
+
+<template>
+   <div>   
+	<a v-bind:href = "link" v-bind:title = "hello"></a> //v-bind:href 可以缩写 -> :href ="link ",是动态绑定 。
+// :class = "kalo" 绑定与自身有class不冲突的 。绑定的class也可以是一个对象 。
+   </div>
+    <p :class = "classname" :style = "lopa"></p>
+   <compontentA :dataA = "dataA"></compontentA>
+    <div v-if = "isPartA">isPartA</div>
+    <div v-else = "no data "></div>
+    <div v-show = "!isPartA"></div>
+</template>
+
+export default{
+  components:{componentA},//es6的一个缩写，相当于：componentA:componentA
+  data(){
+     return {
+	hello:"world"，
+	num：1，
+        status:true，
+	link:"http://www.baidu.com",
+	dataA:12,
+  	classname:{"red-font":true,"blue-font":true},
+//也可以是数组的方式  classname:["red-font","blue-font"]
+	lopa:{"color":"red"},
+	isPartA:true
+     }
+  }
+
+}
+
+
+总结：
+1、v-bing 动态绑定标签属性
+2、v-bind可简写为： 
+3、使用v-bind 绑定class和内联样式
+4、使用v-if ，v-show ，v-else 进行条件渲染 
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~vue事件绑定和表单~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<template>
+   <div>   
+	<button @click="adItem">addItem</button>  //这里把v-on:click标签可以写成@click 标签
+	<button v-on:click.stop="toggle">toggle</button> //v-on的标签是提供一些修改器的，如v-on:click.stop = "a",这里stop是阻止冒泡的意思 。
+	
+	<input @keydown.enter = "onkeydown"> //这样v-on keydown是参数,enter是修改>
+
+	//如何在当前组件引用子组件 
+
+	<comA @my-event="onComaMyEvent"></comA> // 自定义事件 
+	 
+	//数据的双向绑定 ，这里的 myvalue要提前在data里面定义，不然会产生错误 。
+	<input v-model = "myvalue" type = "text"> {{myvalue}}  // ==》v-model有三个修改器，v-model.lazy="a"，意思是输完之后enter才更换绑定内容 ，v-model.number="a",强制输入是数字 ,v-model.trim="a" ，意思是前后的位置非空操作
+	<select v-model = "selection">
+	   <option value="1">1<option>
+	   <option value="2">2<option>
+	</select>
+	//或者下面把option动态显示 	
+	<select v-model = "selection">
+	    <option v-for = "item in selectionOption" :value = "item.value">{{item.text}} </option>
+	</select>
+	//像这样的一套vue 选项组件很有必要脱离出来 ，以组件的形式修改 。
+	  
+
+</template>
+<script>
+inport Vue form "vue"
+import comA from "./components/a"    //es6 import  引入子组件 ;在当前组件引入子组件的写法 。将子组件配置import进来
+
+export default{
+  components:{comA}, //在当前这个组件里注册一个子组件，对象的形式，可以引入更多的子组件 ，就可以在templat里面使用这个组件的模板，使用的方法是以组件名小写（<com-a></com-a>）以标签的形式;es6的一个缩写，相当于：componentA:comA，配置这样一段代码，就能够在上面使用vue data 的数据
+  data(){
+     return {
+	selection:null,
+	selectionOption:[
+	  {
+	  	text:"apple",
+		value:0
+	   },
+	   {
+	       text:"banana",
+	       value:1
+	    }	
+	],
+	my-value:""
+	hello:"world"，
+	num：1，
+        status:true，
+	list:[
+	   {
+	     name:"apple",
+	     price:34
+	    },
+	   {
+	     name:"apple",
+	     price:34
+	    },
+	   {
+	     name:"apple",
+	     price:34
+	    }
+	
+	]，
+	objList:{
+	  name:"apple",
+	  price:34,
+	  color:"red",
+	  weight:14
+	}
+     }
+  },
+  methods:{  //通过methods 封装触发事件的方法 
+  	addItem(){   // es6的简写 ，相当于addItem:function(){},在这个方法里面可以调用data
+       	   Vue.set(this.list,1,{name:"pinaapple",price:256})
+        }，
+	toggle(){
+	   this.isPartA = !this.isPartA
+	
+	},
+	onkeydown(){console.log(on key down )},
+	onComaMyEvent(){console.log( on key onComaMyEvent)}
+  
+  }
+
+}
+</script>
+
+
+总结：
+
+v-on ，@，methods事件绑定 
+v-on 修饰符可以指定键盘事件 
+v-model 表单数据模型双向绑定
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~vue的计算属性和数据监听 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+计算属性：
+<template>
+   <div>
+	<input type = "text" v-model="myValue">
+	{{myValueWithoutNum}}  // 通过计算属性调用的 。
+	{{getMyValWithoutNum()}} //通过方法调用的
+   </div>
+</template>
+<script>
+import Vue from "vue"
+export default{
+   data(){
+      return {
+         myvalue:""
+      }
+    },
+   computed:{  //通过计算属性来调用 ，还可以通过方法来调用 ;两者的区别在于:computed 下的myvalue不更新的时候，它也就不更新，而通过方法调用的会不断更新重新获取myvalue值。
+     myValueWithoutNum(){
+        return this.myValue.replace(/\d/g,"")
+     }
+   
+   },
+    methods:{  //通过methods 封装触发事件的方法 
+  	addItem(){   // es6的简写 ，相当于addItem:function(){},在这个方法里面可以调用data
+       	   Vue.set(this.list,1,{name:"pinaapple",price:256})
+        }，
+	toggle(){
+	   this.isPartA = !this.isPartA
+	
+	},
+	onkeydown(){console.log(on key down )},
+	onComaMyEvent(){console.log( on key onComaMyEvent)}，
+	getMyValWithoutNum(){return this.myValue.replace(/\d/g,"")}  ，
+	watch:{myValue:function(newvalue,oldvalue){console.log(newvalue,oldvalue)}}
+  
+   }
+}
+</script>
+
+属性监听： -->意思是监听vuejs的变量，每当变量改动的时候，会进行一些操作 。如上代码，通过watch：{kali:function(newvalue,oldvalue){}}来监听 。
+
+
+
+总结：
+computed 选项-计算属性， 注意：computed的计算属性会被缓存的
+通过调用方法来计算属性 ，注意：这个不会被缓存，每一次都是调用最新值 
+watch选项-监听属性的变化 
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~深入vue组件-模板的渲染，父子组件之间的通讯~~~~~~~~~~~~~~~~~~~~~
+根组件->layout->header
+                footer
+                content-->sidebar
+                          .....                        
+
+上面是父组件和子组件的引用 
+还有： 公共部分的组件引用 
+
+--------------------------------------------
+good ： 事件和属性都不支持驼峰的命名 。是以小写加-的方式命名。 
+
+
+模板引入:
+<template>
+   <div> 
+	<p :is = "com-a"></p>  //也可以以这样的形式引入到模板 ,可以动态加载变量 ，如下 
+	<p :is="comToRender"></p> // 这样可以给p绑定不同的组件 
+
+	<com-a></con-a>  //以“-小写”形式
+	<con-ljs-h-j-hifi-lopa></con-ljs-h-j-hifi-lopa>  //以“-小写”形式
+   </div>
+</template>
+<script>
+
+inport Vue form "vue"
+import comA from "./components/a"    //es6 import  引入子组件 ;在当前组件引入子组件的写法 。将子组件配置import进来
+export default{
+  components:{
+      comA,
+      conLjuHJhifiLopa,
+  },
+  data(){
+     return {
+	comToRender:"com-a"
+
+     }
+  },
+  methods:{
+  	addItem(){   // es6的简写 ，相当于addItem:function(){},在这个方法里面可以调用data
+       	   Vue.set(this.list,1,{name:"pinaapple",price:256})
+        }，
+	toggle(){
+	   this.isPartA = !this.isPartA
+	
+	},
+  
+  }
+
+}
+</script>
+
+
+
+     组件之间的通信 
+-----------------------------------------------------
+父组件与子组件之间的信息传递 :
+Parent-->pass Props -->Child   
+Child-->Emit Events(事件) --> Parent  子组件向外传递事件 
+-----------------------------------------------------
+父组件:
+
+<template>
+   <div> 
+	//动态的
+	<input type="text" v-model="myval">
+	<com-a :my-value ="myval" @my-event="getMyEvent">
+	   <p slot="header">7479-header</p> //父组件向子组件传递的一个模板功能应用，在子组件那边用<slot></slot>接收。 
+	  <p slot="footer">123-footer</p>  // 与子组件对上 。
+	</com-a> // 使用v-bind 动态 。子组件，my-value是子组件的属性，所以要在子组件配置一下传递 。
+
+	<keep-alive> //作用是如果currentView 变量有几个com-a、com-b ，在相互切换的时候会被缓存起来 ，提高了组件的加载速度 。
+	  //动态组件通信 ，通过v-bing来绑定变量 ,动态组件有一些类似路由：<router-view></router-view>
+	  <p :is="currentView"></p>
+	</keep-alive>
+
+
+	<com-a number-to-do="78"></com-a>  //以“-小写”形式,但是父组件里面无论怎样传的都是字符串。
+	<con-ljs-h-j-hifi-lopa></con-ljs-h-j-hifi-lopa>  //以“-小写”形式
+   </div>
+</template>
+<script>
+
+inport Vue form "vue"
+import comA from "./components/a"    //es6 import  引入子组件 ;在当前组件引入子组件的写法 。将子组件配置import进来
+export default{
+  components:{
+      comA,
+      conLjuHJhifiLopa,
+  },
+  data(){
+     currentView:"com-a",
+     myval:"",
+     return {
+	comToRender:"com-a"
+
+     }
+  },
+  methods:{
+  	addItem(){   // es6的简写 ，相当于addItem:function(){},在这个方法里面可以调用data
+       	   Vue.set(this.list,1,{name:"pinaapple",price:256})
+        }，
+	toggle(){
+	   this.isPartA = !this.isPartA
+	
+	},
+  
+  }
+
+}
+</script>
+
+子组件:
+
+<template>
+   <div> 
+	{{hello}}
+	{{numberToDo}}
+	<button @click = "emitMyEvent">emit</button>
+	
+	//myvalue
+	{{myvalue}}  // 配置一下myvalue
+
+	<slot name="header">no header</slot> // 在子组件下通过slot标签接受父组件传的插槽内容  。中间的no slot 如果父组件没有传递内容，就显示no-slot。 
+	
+	<p>luan qi ba zao</p>
+	<slot name="footer">no footer</slot>   //在父组件那边配置对上 。
+
+
+
+   </div>
+</template>
+
+<script>
+export default{
+  props:["number-to-do","fish"],  // 通过props配置子组件向父组件传递的属性 ;props可以是数组也可以是对象 ，props:{"number-to-do":number} //在对象里面可以指定传值类型，如number 、string object 等 
+
+//myvalue
+  props:{"my-value":[Number,String,Object]} //props 配置myvalue 让父组件接受子组件的属性 。
+
+  data(){
+     return {
+	hello:"i am component a"
+
+     }
+  },
+  methods:{
+  	emitMyEvent(){
+       	   this.$emit("my-event",this.hello)  //子组件的事件 。
+        }，
+  
+  }
+
+}
+</script>
+
+//父组件向子组件传递模板标签的功能实现：
+
+总结（组件之间的通信）：
+1、组件向内传递props 如：<com-a :my-props="myVal"></com-a>
+2、子组件创建一个事件，父组件通过监听子组件的事件获取
+3、插槽功能 ，写在组件的标签功能，可以通过slot 对接 。
+
+
+
+总结： 
+1、使用组件树设计项目，配置文件链接各个组件-命名转换，动态组件
+2、父组件向内传递属性-动态属性
+3、子组件向外发布事件
+4、slot插槽传递模板-具名slot 
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~vuejs一些高级功能~~~~~~过渡动画-css实现过渡 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------
+vuejs一些高级功能：
+1、过渡
+2、自定义指令
+3、mixins
+4、插件
+
+-----------------------------------
+
+vue高级功能-过渡、动画 （通过css（不同阶段的类名） ，js 实现过渡 ）
+
+
+<template>
+   <div> 
+	<button v-on:click="show=!show">
+	  Toggle
+	<button>
+	
+	<div class="ab">
+	  <transition name="my-trans">  // transition是vue的内置标签 。
+	      <p v-show="show">i am show</p>  // 也可以v-if ，它会把元素给删掉 
+	   </transition>
+	</div>
+   </div>
+</template>
+
+<script>
+inport Vue form "vue"
+import comA from "./components/a"    //es6 import  引入子组件 ;在当前组件引入子组件的写法 。将子组件配置import进来
+export default{
+  components:{
+      comA
+  },
+
+
+
+
+
+
+  data(){
+     currentView:"com-a",
+     myval:"",
+     return {
+	comToRender:"com-a"
+
+     }
+  },
+  methods:{
+  	addItem(){   // es6的简写 ，相当于addItem:function(){},在这个方法里面可以调用data
+       	   Vue.set(this.list,1,{name:"pinaapple",price:256})
+        }，
+	toggle(){
+	   this.isPartA = !this.isPartA
+	
+	},
+  
+  }
+
+}
+</script>
+
+
+<style>
+
+.my-trans-enter-active,.my-trans-leave-active{transition:all .5s ease-out}
+.my-trans-enter{transform:translateY(-500px);opacity:0}
+.my-trans-leave-active{transform:translateY(500px);opacity:0;}
+html{height:100%;}
+body{display:flex}
+
+</style>
+
+-------------------
+接受的过渡状态
+多元素过渡
+多元素过渡 模式
+-------------------
+动态组件的过渡 :
+                                          CSS控制如下:
+如下：
+
+<template>
+   <div> 
+	<button v-on:click="toggleCom">
+	  Toggle
+	<button>
+	
+	<div class="ab">
+	  <transition name="fade" mode="out-in">  // transition是vue的内置标签; mode="out-in就是先出去在进来，不会两个同时存在 。
+	      <p v-show="show">i am show</p>  // 也可以v-if ，它会把元素给删掉 
+
+		//动态使用子组件 ,下面两个一样的 ，is的好处是可以实现一个动态的组件 
+		<div :is="currentView"></div>
+	//	<com-a></con-a>
+
+
+
+//下面是使用v-if v-else 实现多元素的过渡,如果是同样的标签名，要指定key=“”，才会实现过渡 。
+<p v-if="show">i am show</p>
+<div v-else> on in show</div>     // 上面click="show!=show"
+
+
+
+
+	   </transition>
+	</div>
+   </div>
+</template>
+
+<script>
+inport Vue form "vue"
+import comA from "./components/a"   //引入子组件
+import comB from "./components/b"
+export default{
+  components:{
+      comA,comB    // 注册子组件 
+  },
+
+  data(){
+     return {
+       currentView:"com-a",
+        myList:[
+	   {
+	     name:"apple",
+	     price:1
+	
+	    },
+	   {
+	     name:"apple",
+	     price:1
+	
+	    },
+	 ]
+
+       }
+   },
+  methods:{
+      toggleCom(){
+	if(this.currentView=="com-a"){
+	    this.currentView=="com-b"
+	}
+	else{
+	    this.currentView=="com-a"
+	
+	}
+	
+	}
+  }
+
+}
+</script>
+
+
+<style>
+
+.fade-enter-acter,.fade-leave-active{
+  transition:opacity .5s ease-out
+}
+.fade-enter,.fade-leave-active{
+  opacity:0;
+}
+
+html{height:100%;}
+body{display:flex}
+</style>
+
+            ------------------------------------------------------------------
+                                    JS控制动画过渡如下:
+                             (我们使用jquery的时候，可以在index.html上引入，因为这里的代码不会经过打包处理，只会经过一个入口的界面加东西，不会对里面的资源加东西 。)
+            ------------------------------------------------------------------
+
+<template>
+   <div> 
+	<button v-on:click="show!=show">
+	    Toggle
+	</button>
+	<div>
+	  <transition
+	  @before-enter="beforeEnter"
+	  @enter="enter"
+	  v-on:leave="leave"
+	  :css="false>
+	     <p class="animate-p" v-show="show">i am show </p>
+	  </transition>
+	</div>
+   </div>
+</template>
+
+<script>
+inport Vue form "vue"
+import comA from "./components/a"   //引入子组件
+import comB from "./components/b"
+export default{
+  components:{
+      comA,comB    // 注册子组件 
+  },
+
+  data(){
+     return {
+       currentView:"com-a",
+        myList:[
+	   {
+	     name:"apple",
+	     price:1
+	
+	    },
+	   {
+	     name:"apple",
+	     price:1
+	
+	    },
+	 ]
+
+       }
+   },
+  methods:{
+       beforeEnter:function(el){
+          $(el).css({
+              left:"-500px",
+              opacity:0
+          
+          })
+        },
+      enter:function(el,done){
+         $(el).animate({
+           left:0 ;
+           opacity:1          
+         },{
+           duration:1500,  // 动画执行的毫秒数
+           complete:done   // 动画完成以后做的事情 。
+          });
+      },
+      leave:function(el,done){
+        $(el).animate({
+           left:"500px",
+           opacity:0
+          },{
+            duration:1500,
+            complete:done
+           })
+      },
+  }
+
+}
+</script>
+<style>
+
+.animate-p{
+  position:absolute;
+  top:0;
+  left:0;
+}
+
+html{
+  height:100%
+}
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+}
+</style>
+
+----------------------------vue的高级功能 - 自定义指令--------------------------------------
+1、自定义指令在当前组件用的
+2、自定义指令在全局中，全局的自定义指令写在全局的js里面，就是main.js里面 。
+-------------------------------------
+通过：
+directives:{
+  color:function(el,binding){
+    el.style.color=binding.value
+  }
+},
+-------------------------------------
+<template>
+   <div> 
+	<button v-on:click="show!=show">
+	    Toggle
+	</button>
+	<p v-color="'red'">hello world</p>    // 自定义指令 v-color
+
+         <input type="text" v-focus>  //自定义指令v-focus 
+	
+   </div>
+</template>
+
+<script>
+inport Vue form "vue"
+import comA from "./components/a"   //引入子组件
+import comB from "./components/b"
+export default{
+  components:{
+      comA,comB    // 注册子组件 
+  },
+  directives:{   // 自定义指令 
+     color:function(el,binding){
+        el.style.color=binding.value
+     }，
+     focus:{
+       inserted(el,binding){  // 自定义指令，让页面初始化的时候input获取焦点。
+          el.focus()  
+       }
+     }
+  },
+  data(){
+     return {
+       currentView:"com-a",
+        myList:[
+	   {
+	     name:"apple",
+	     price:1
+	
+	    },
+	   {
+	     name:"apple",
+	     price:1
+	
+	    },
+	 ]
+
+       }
+   },
+  methods:{
+       beforeEnter:function(el){
+          $(el).css({
+              left:"-500px",
+              opacity:0
+          
+          })
+        },
+      enter:function(el,done){
+         $(el).animate({
+           left:0 ;
+           opacity:1          
+         },{
+           duration:1500,  // 动画执行的毫秒数
+           complete:done   // 动画完成以后做的事情 。
+          });
+      },
+      leave:function(el,done){
+        $(el).animate({
+           left:"500px",
+           opacity:0
+          },{
+            duration:1500,
+            complete:done
+           })
+      },
+  }
+
+}
+</script>
+<style scoped>  // scoped的意思是局部的，如果没有scoped的话会是全局的
+
+.animate-p{
+  position:absolute;
+  top:0;
+  left:0;
+}
+
+html{
+  height:100%
+}
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+}
+</style>
+
+----------------------------vue的高级功能 - 插件----------------
+插件的安装流程 
+vue-router --save  安装 
+然后通过 import VueRouter from “vue-router”
+Vue.use(VueRouter)
+let router = new VueRouter()
+
+new Vue({
+    router,   //这样就算正式引入到router 插件使用
+    el:"#app"
+    render:function(h){
+          return h(App)
+    }
+    directives:{
+
+    }
+})
+
+还有一种简单一点的插件引用 ：
+import Vue from "vue"
+import App from "./App"
+import VueRouter from “vue-router”
+ 
+Vue.use(vueRouter)
+Vue.use(VueResource) // 通过这个注册的方法，插入到系统里面使用，在父组件里面就可以直接使用 。等 
+new Vue({
+    el:"#app"
+    render:function(h){
+          return h(App)
+    }
+    directives:{
+
+    }
+})
+
+
+插件有很多：比如表单验证，ui插件等等 
+
+
+------------------------------单文件组件--------------
+
+单文件组件形式：一个组件，把emplate 、script、style集合在一个组件里面，这样作为一个组件，所以组件都是一个.vue文件，最终在main.js将根组件拼装到页面；
+单文件组件实现：vue-loader 、和webpack ；
+
+单文件打包的时候：对module:{loaders:[{test:/\.vue$/,loader:"vue"},{test:/\.js$/,loader:"babel",include:projectRoot,exclude:/node_modules/},{test:/].json$/,loader:"json"},{test:/\.html$/,}]}
+
+-------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~vue-cli安装脚手架、打包~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Vue-cli是初始化一个Vue项目，vue官方提供的脚手架工具
+ 
+使用vue-cli的优势：
+   成熟的vue项目架构设计
+   本地测试服务器
+   集成打包上线方案 （webpack）
+
+使用vue-cli的系统要求：
+  Node.js（>=4.x）
+  Git
+  一个能使用node的命令行终端
+ 
+
+安装vue-cli：
+ 1、npm install vue-cli -g
+ 2、vue init webpack my-project  初始化项目 ->通过Git下载vue-cli脚手架代码以后
+ 3、npm install 安装项目依赖
+ 4、npm run dev （在localhost启动测试服务器） 或者 npm run build (生成上线目录（部署）)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

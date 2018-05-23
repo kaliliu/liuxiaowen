@@ -1,0 +1,16 @@
+一、什么是前端路由:
+
+根据不同的地址更新不同的页面 :就是利用js中ajax 请求切换，不用刷新整个页面 。根页面请求服务器的数据不一样。
+
+二、设置前端路由:
+
+1、安装前端路由 ，通过npm install vue-router --save 安装 
+
+2、安装完毕后，在入口文件里引入vue-router （import VRouter from 'vue-router'）
+
+如下面：
+import Vue from 'vue'
+import App from './App'
+
+三、前端路由的参数:
+

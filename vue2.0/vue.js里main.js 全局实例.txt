@@ -1,0 +1,16 @@
+import Vue from "vue"
+import App from "./App"
+
+new Vue({
+   el:"#app",
+   render:function(h){
+        return h(App)
+   },
+   directives:{    // 全局中的自定义指令 
+        color:function(el,binding){  // el：指令所绑定的元素，可以用来直接操作DOM；binding：一个对象，包含以下属性（name、value、oldvalue、expression、arg、modifiers）
+             el.style.color = binding.value
+        }，
+        
+        
+    }
+})
