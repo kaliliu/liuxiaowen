@@ -1,0 +1,586 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-title" content="CSCO乳腺癌青委会" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta http-equiv="x-dns-prefetch-control" content="on" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta name="full-screen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta name="x5-page-mode" content="app">
+    <meta name="browsermode" content="application">
+    <title>康爱365病历上传</title>
+    <link rel="stylesheet" href="uploadcss.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-appearance: none;
+        }
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-size: 62.5%;
+            overflow: hidden;
+        }
+        body {
+            font-family: "Helvetica","MicroSoft YaHei",Arial,sans-serif;
+            -webkit-text-size-adjust: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-overflow-scrolling: touch;
+            height: 100%;
+            overflow: hidden;
+        }
+
+
+        ul,li{
+            list-style-type: none;
+        }
+
+        a, input {
+            outline: none;
+            text-decoration: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+        }
+        .box{
+            max-width: 960px;
+            margin: 0 auto;
+            height: 100%;
+        }
+
+        #choose {
+            display: none;
+        }
+
+        canvas {
+            width: 100%;
+            border: 1px solid #000000;
+        }
+        .upload-b{margin-top:13.3rem;}
+        #upload {
+            display: block;
+            margin: 0 auto;
+            width:11rem;
+            height:11rem;
+            background: url("image/addpicture.png") no-repeat center center;
+            background-size: 11rem ;
+            -moz-background-size: 11rem ;
+            -webkit-background-size:11rem ;
+            -o-background-size:11rem ;
+            cursor: pointer;
+        }
+        .touch {
+            background-color: #ddd;
+        }
+        .img-box{
+            margin-bottom:15vh;
+        }
+
+        .img-list {
+
+        }
+
+        .img-list li {
+            position: relative;
+            float: left;
+            width: 32vw;
+            height: 32vw;
+            margin-left:1vw;
+            margin-top:1.7rem;
+            z-index:10;
+            /*border: 1px solid rgb(100,149,198);*/
+            /*background: #fff no-repeat center;*/
+            background-size: 32vw 32vw ;
+            -webkit-background-size:32vw 32vw;
+            -moz-background-size:32vw 32vw ;
+            -o-background-size: 32vw 32vw ;
+            background-repeat: no-repeat;
+        }
+
+        .progress {
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            line-height: 20px;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(100,149,198,.5);
+            display:none
+        }
+
+        .progress span {
+            display: block;
+            width: 0;
+            height: 100%;
+            background-color: rgb(100,149,198);
+            text-align: center;
+            color: #FFF;
+            font-size: 13px;
+
+        }
+
+        .size {
+            position: absolute;
+            width: 100%;
+            height: 15px;
+            line-height: 15px;
+            bottom: -18px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            display:none;
+        }
+
+        .tips {
+            display: block;
+            text-align: center;
+            font-size:1.6rem;
+            margin:2.8rem auto 0;
+            color: #4d4d4d;
+        }
+
+        /*.pic-list {*/
+            /*margin: 10px;*/
+            /*line-height: 18px;*/
+            /*font-size: 13px;*/
+        /*}*/
+
+        /*.pic-list a {*/
+            /*display: block;*/
+            /*margin: 10px 0;*/
+        /*}*/
+
+        /*.pic-list a img {*/
+            /*vertical-align: middle;*/
+            /*max-width: 30px;*/
+            /*max-height: 30px;*/
+            /*margin: -4px 0 0 10px;*/
+        /*}*/
+    </style>
+</head>
+<body>
+<div class="box">
+    <input type="file" id="choose" accept="image/*" multiple>
+    <div class="img-box clear-after">
+        <ul class="img-list clear-after">
+            <li class="upload-b" style="margin-top:13.3rem;width:100%;">
+                <a id="upload"></a>
+                <span class="tips">上传文件</span>
+            </li>
+        </ul>
+
+    </div>
+
+    <!--保存-->
+    <div id="keep" >
+        <img src="image/preservation.png" id="img_keep" />
+        <p>保存</p>
+    </div>
+
+    <div id="sd"></div>
+    <!--<div class="see-picture"></div>-->
+    <img src="" alt="图片"  class="see-picture">
+</div>
+
+<!--<span class="tips">请根据疾病治疗情况上传相应的检查检验结果、医嘱、病历或出院小结等</span>-->
+<!--<span class="tips">只允许上传jpg、png及gif</span>-->
+<!--<span class="tips">请根据疾病治疗情况上传相应的检查检验结果、医嘱、病历或出院小结等</span>-->
+<!--<div class="pic-list" style="border:1px solid red "></div>-->
+
+<script src="jquery-2.1.4.min.js"></script>
+<script>
+    //12
+    var filechooser = document.getElementById("choose");
+    //    用于压缩图片的canvas
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext('2d');
+    //    瓦片canvas
+    var tCanvas = document.createElement("canvas");
+    var tctx = tCanvas.getContext("2d");
+    var maxsize = 100 * 1024;
+    $("#upload").on("click", function () {
+        filechooser.click();
+
+    })
+        .on("touchstart", function () {
+            $(this).addClass("touch")
+        })
+        .on("touchend", function () {
+            $(this).removeClass("touch")
+        });
+    filechooser.onchange = function () {
+        if (!this.files.length) return;
+        var files = Array.prototype.slice.call(this.files);
+        if (files.length > 9) {
+            alert("最多同时只可上传9张图片");
+            return;
+        }
+        files.forEach(function (file, i) {
+            showLoading('加载中');
+            if (!/\/(?:jpeg|png|gif)/i.test(file.type)) return;
+            var reader = new FileReader();
+            var li = document.createElement("li");
+            //          获取图片大小
+            var size = file.size / 1024 > 1024 ? (~~(10 * file.size / 1024 / 1024)) / 10 + "MB" : ~~(file.size / 1024) + "KB";
+            li.innerHTML = '<div class="icon"></div><div class="progress"><span></span></div><div class="size">' + size + '</div>';
+            $(".img-list").prepend($(li));
+            ////////////////
+            reader.onload = function () {
+//                alert(99999);
+                var result = this.result;
+                var img = new Image();
+                img.src = result;
+                /////////////////
+                var imglist = $(".img-list li");
+                if (imglist.length >2) {
+                    imglist.each(function () {
+//                        console.log($(this));
+                        var bg = $(this).css('background-image');
+                       bg =  bg.replace('url(','').replace(')','');
+                       if(bg !=='none'){
+                           bg = JSON.parse(bg);
+                           if(bg == result){
+                               var  index = $(this).index();
+                               console.log(index);
+                               showToast("第"+index+"张"+"已经选择了!");
+                               imglist[0].remove();
+                            return
+                        }
+                       }
+                        return
+                    })
+                }
+                $(li).css("background-image", "url(" + result + ")");
+                hideLoading();
+                ///////
+                $(document).on('click', '#keep', function () {
+                    showLoading('提交中...');
+                    var list = $('.img-list li');
+                    var data = {};
+                    if (list.length <= 1) {
+                        alert('请上传病历');
+                        return;
+                    }
+                    for(var i = 0 ;i<list.length;i++){
+                        console.log(list[i].className);
+                        if(list[i].className !=='upload-b'){
+                            ///////
+//                如果图片大小小于100kb，则直接上传
+                            if (result.length <= maxsize) {
+                                img = null;
+                                upload(result, file.type, $(li), file.name,list[i]);
+//                    upload(basestr, type, $li,filename)
+                                return;
+                            }
+                            //      图片加载完毕之后进行压缩，然后上传
+                            if (img.complete) {
+                                callback();
+                            } else {
+                                img.onload = callback;
+                            }
+                            function callback() {
+                                var data = compress(img);
+                                upload(data, file.type, $(li), file.name,list[i]);
+//                                img = null;
+                            }
+                            $('.progress').show();
+                            $('.size').show();
+//                alert(88)
+                        }
+                    }
+                    return list
+                });
+
+            };
+            reader.readAsDataURL(file);
+            $('#keep').show();
+            $('.tips').hide();
+            $('#upload').css({width:'100%',height:'100%',backgroundSize:'cover'});
+            $(".upload-b").css({marginTop:'1.7rem',width:'32vw'});
+        });
+
+        $(".img-list li").on('click',function () {
+            var _this = $(this);
+            var seepic = $('.see-picture');
+            if(_this.attr('class')!=='upload-b'){
+                $('#sd').show();
+                var url = $(this).css('background-image');
+                url = url.replace('url(','').replace(')','');
+                 url = JSON.parse(url);
+                seepic.attr('src',url).css({marginTop:-(seepic.height() / 2 / window.innerHeight * 100) + 'vh'}).show();
+            }
+
+        });
+        $('.icon').bind('click',function () {
+            var _this = $(this);
+            _this.parent().remove();
+           if($(".img-list li").size()<=1){
+               retun()
+           }
+
+        });
+        $(document).on('click', '#sd', function () {
+            $(this).hide(1000);
+            $('.see-picture').hide(1000);
+
+        });
+
+    };
+    function retun() {
+        $('#keep').hide();
+        $('.tips').show();
+        $('#upload').css({width:'11rem',height:'11rem',backgroundSize:'11rem'});
+        $(".upload-b").css({marginTop:'13.3rem',width:'100%'});
+    }
+    //显示loading
+    function showLoading(msg) {
+        var obj = document.getElementById('loading');
+        if (!obj) {
+            obj = document.createElement('div');
+            obj.id = 'loading';
+            obj.innerHTML = '<img src="image/loading.gif" />';
+            document.body.appendChild(obj);
+        }
+        if (msg) {
+            var pList = obj.getElementsByTagName('p');
+            if (pList.length > 0) {
+                var p = pList[0];
+                p.innerHTML = msg;
+            } else {
+                obj.innerHTML += '<p>' + msg + '</p>';
+            }
+        }
+        document.getElementById('loading').style.display = 'block';
+    }
+
+    //隐藏loading
+    function hideLoading() {
+        document.getElementById('loading').style.display = 'none';
+    }
+    //弹框
+    function showToast(msg, callback) {
+        var obj = document.getElementById('toast');
+        if (!obj) {
+            obj = document.createElement('div');
+            obj.id = 'toast';
+            document.body.appendChild(obj);
+        }
+        obj.innerHTML = msg;
+        setTimeout(function () {
+            obj.style.display = 'none';
+            if (callback)
+                callback();
+        }, 800);
+        obj.style.display = 'block';
+    }
+
+    //    使用canvas对大图片进行压缩
+    function compress(img) {
+        var initSize = img.src.length;
+        var width = img.width;
+        var height = img.height;
+        //如果图片大于四百万像素，计算压缩比并将大小压至400万以下
+        var ratio;
+        if ((ratio = width * height / 4000000) > 1) {
+            ratio = Math.sqrt(ratio);
+            width /= ratio;
+            height /= ratio;
+        } else {
+            ratio = 1;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        //        铺底色
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        //如果图片像素大于100万则使用瓦片绘制
+        var count;
+        if ((count = width * height / 1000000) > 1) {
+            count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片
+            //            计算每块瓦片的宽和高
+            var nw = ~~(width / count);
+            var nh = ~~(height / count);
+            tCanvas.width = nw;
+            tCanvas.height = nh;
+            for (var i = 0; i < count; i++) {
+                for (var j = 0; j < count; j++) {
+                    tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
+                    ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
+                }
+            }
+        } else {
+            ctx.drawImage(img, 0, 0, width, height);
+        }
+        //进行最小压缩
+        var ndata = canvas.toDataURL('image/jpeg', 0.1);
+        console.log('压缩前：' + initSize);
+        console.log('压缩后：' + ndata.length);
+        console.log('压缩率：' + ~~(100 * (initSize - ndata.length) / initSize) + "%");
+        tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
+        return ndata;
+    }
+    //    图片上传，将base64的图片转成二进制对象，塞进formdata上传
+    function upload(basestr, type, $li,filename,_this) {
+        var text = window.atob(basestr.split(",")[1]);
+        var buffer = new Uint8Array(text.length);
+        var pecent = 0, loop = null;
+        for (var i = 0; i < text.length; i++) {
+            buffer[i] = text.charCodeAt(i);
+        }
+        var blob = getBlob([buffer], type);
+        var xhr = new XMLHttpRequest();
+        var formdata = getFormData();
+        formdata.append('imagefile', blob, filename);
+        formdata.append('ModelCode', 'UserUpload');
+        formdata.append('ModeName', '用户上传');
+        formdata.append('Remark', '用户通过微信上传图片文件');
+        var userId = getQueryString('userId') ? getQueryString('userId') : 'CFC31801-9D32-4CC3-9A72-A477FCFAE5CC';
+        formdata.append('userID', userId);
+        xhr.open('post', 'https://ctms.anticancer365.com/User/SaveUserImageByWX');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var jsonData = JSON.parse(xhr.responseText);
+                if (jsonData.IsSuccess == false) {
+                    alert('上传失败');
+                    return;
+                }
+
+                var imagedata = jsonData[0] || {};
+                //var text = imagedata.path ? '上传成功' : '上传失败';
+                var text = jsonData.IsSuccess ? '上传成功' : '上传失败';
+                console.log(text + '：' + jsonData.Data[0].FilePath);
+                clearInterval(loop);
+                //当收到该消息时上传完毕
+                $li.find(".progress span").animate({ 'width': "100%" }, pecent < 95 ? 200 : 0, function () {
+                    $(this).html(text);
+                });
+                hideLoading();
+                showToast('上传成功');
+//                alert(1)
+            setTimeout(function () {
+                _this.remove();
+                retun();
+            }, 500);
+                if (!jsonData.Data[0].FilePath) return;
+
+//                $(".pic-list").append('<a href="' + jsonData.Data[0].FilePath + '">' + jsonData.Data[0].FileName + '<img src="' + jsonData.Data[0].FilePath + '" /></a>');
+
+            } else {
+
+            }
+        };
+        //数据发送进度，前50%展示该进度
+        xhr.upload.addEventListener('progress', function (e) {
+            if (loop) return;
+            pecent = ~~(100 * e.loaded / e.total) / 2;
+            $li.find(".progress span").css('width', pecent + "%");
+            if (pecent == 50) {
+                mockProgress();
+            }
+        }, false);
+        var aaaa = arguments[arguments.length-1];
+        //数据后50%用模拟进度
+        function mockProgress() {
+            if (loop) return;
+            loop = setInterval(function () {
+                pecent++;
+                $li.find(".progress span").css('width', pecent + "%");
+                if (pecent == 99) {
+//                    _this.remove();
+//                    retun();
+                    clearInterval(loop);
+                }
+            }, 100);
+        }
+        xhr.send(formdata);
+    }
+    /**
+     * 获取blob对象的兼容性写法
+     * @param buffer
+     * @param format
+     * @returns {*}
+     */
+    function getBlob(buffer, format) {
+        try {
+            return new Blob(buffer, { type: format });
+        } catch (e) {
+            var bb = new (window.BlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder);
+            buffer.forEach(function (buf) {
+                bb.append(buf);
+            });
+            return bb.getBlob(format);
+        }
+    }
+    /**
+     * 获取formdata
+     */
+    function getFormData() {
+        var isNeedShim = ~navigator.userAgent.indexOf('Android')
+            && ~navigator.vendor.indexOf('Google')
+            && !~navigator.userAgent.indexOf('Chrome')
+            && navigator.userAgent.match(/AppleWebKit\/(\d+)/).pop() <= 534;
+        return isNeedShim ? new FormDataShim() : new FormData()
+    }
+    /**
+     * formdata 补丁, 给不支持formdata上传blob的android机打补丁
+     * @constructor
+     */
+    function FormDataShim() {
+        console.warn('using formdata shim');
+        var o = this,
+            parts = [],
+            boundary = Array(21).join('-') + (+new Date() * (1e16 * Math.random())).toString(36),
+            oldSend = XMLHttpRequest.prototype.send;
+        this.append = function (name, value, filename) {
+            parts.push('--' + boundary + '\r\nContent-Disposition: form-data; name="' + name + '"');
+            if (value instanceof Blob) {
+                parts.push('; filename="' + (filename || 'blob') + '"\r\nContent-Type: ' + value.type + '\r\n\r\n');
+                parts.push(value);
+            }
+            else {
+                parts.push('\r\n\r\n' + value);
+            }
+            parts.push('\r\n');
+        };
+        // Override XHR send()
+        XMLHttpRequest.prototype.send = function (val) {
+            var fr,
+                data,
+                oXHR = this;
+            if (val === o) {
+                // Append the final boundary string
+                parts.push('--' + boundary + '--\r\n');
+                // Create the blob
+                data = getBlob(parts);
+                // Set up and read the blob into an array to be sent
+                fr = new FileReader();
+                fr.onload = function () {
+                    oldSend.call(oXHR, fr.result);
+                };
+                fr.onerror = function (err) {
+                    throw err;
+                };
+                fr.readAsArrayBuffer(data);
+                // Set the multipart content type and boudary
+                this.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+                XMLHttpRequest.prototype.send = oldSend;
+            }
+            else {
+                oldSend.call(this, val);
+            }
+        };
+    }
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+</script>
+</body>
+</html>
